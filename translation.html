@@ -93,36 +93,46 @@
     <h1>Translator</h1>
     <label for="translation-type">Choose translation type:</label><br>
     <select id="translation-type">
-      <option value="morse">Morse Code to English</option>
-      <option value="binary">Binary to English</option>
+      <option value="morse-en">Morse Code to English</option>
+      <option value="binary-en">Binary to English</option>
+      <option value="en-morse">English to Morse Code</option>
+      <option value="en-binary">English to Binary</option>
     </select>
     <br>
-    <textarea id="input" rows="4" placeholder="Enter Morse code (use spaces between letters, / between words) or Binary (8 bits per character, space separated)"></textarea><br>
+    <textarea id="input" rows="4" placeholder="Enter your input"></textarea><br>
     <button onclick="translate()">Translate</button>
     <div id="output"></div>
   </div>
   <script>
-    // Morse code dictionary
+    // Morse code dictionaries
     const MORSE_CODE = {
       ".-":"A", "-...":"B", "-.-.":"C", "-..":"D", ".":"E", "..-.":"F", "--.":"G",
       "....":"H", "..":"I", ".---":"J", "-.-":"K", ".-..":"L", "--":"M", "-.":"N",
-      "---":"O", ".--.":"P", "--.-":"Q", ".-.":"R", "...":"S", "-":"T", "..-":"U",
+      "---":"O", ".--.":"P", "--.-":"Q", ".-":"R", "...":"S", "-":"T", "..-":"U",
       "...-":"V", ".--":"W", "-..-":"X", "-.--":"Y", "--..":"Z",
       "-----":"0", ".----":"1", "..---":"2", "...--":"3", "....-":"4",
       ".....":"5", "-....":"6", "--...":"7", "---..":"8", "----.":"9",
       ".-.-.-":".", "--..--":",", "..--..":"?", ".----.":"'", "-.-.--":"!",
-      "-..-.":"/", "-.--.":"(`, "-.--.-":")", ".-...":"&", "---...":":",
+      "-..-.":"/", "-.--.":"(", "-.--.-":")", ".-...":"&", "---...":":",
       "-.-.-.":";", "-...-":"=", ".-.-.":"+", "-....-":"-", "..--.-":"_",
       ".-..-.":"\"", ".--.-.":"@", "/":" "
     };
+    const ALPHA_TO_MORSE = {};
+    for(const k in MORSE_CODE) { if(MORSE_CODE[k]!==" ") ALPHA_TO_MORSE[MORSE_CODE[k]] = k; }
 
     function morseToEnglish(input) {
-      // Separate words by / or 2 spaces, letters by single space
       return input.trim().split(' / ').map(
         word => word.split(' ').map(
-          letter => MORSE_CODE[letter] || '?'
+          letter => MORSE_CODE[letter.toUpperCase()] || '?'
         ).join('')
       ).join(' ');
+    }
+
+    function englishToMorse(input) {
+      return input.toUpperCase().split('').map(char => {
+        if(char === ' ') return '/';
+        return ALPHA_TO_MORSE[char] || '?';
+      }).join(' ');
     }
 
     function binaryToEnglish(input) {
@@ -131,19 +141,30 @@
       ).join('');
     }
 
+    function englishToBinary(input) {
+      return input.split('').map(c => {
+        if (c === ' ') return '';
+        let bin = c.charCodeAt(0).toString(2);
+        return bin.padStart(8, '0');
+      }).filter(Boolean).join(' ');
+    }
+
     function translate() {
       const type = document.getElementById('translation-type').value;
       const input = document.getElementById('input').value.trim();
-
+      let result = '';
       if (!input) {
         document.getElementById('output').textContent = '';
         return;
       }
-      let result = '';
-      if (type === 'morse') {
+      if(type === 'morse-en') {
         result = morseToEnglish(input.replace(/\s{2,}/g, ' / '));
-      } else if (type === 'binary') {
+      } else if(type === 'binary-en') {
         result = binaryToEnglish(input);
+      } else if(type === 'en-morse') {
+        result = englishToMorse(input);
+      } else if(type === 'en-binary') {
+        result = englishToBinary(input);
       }
       document.getElementById('output').textContent = result;
     }
