@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Translation | Penguin Jason's Lair</title>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0; padding: 0;
+      background: linear-gradient(135deg, #6a0dad, #8e44ad);
+      color: #fff;
+      display: flex; justify-content: center; align-items: center;
+      min-height: 100vh; text-align: center;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      max-width: 400px; width: 90%;
+    }
+    .top-tabs {
+      position: absolute; top: 30px; right: 40px;
+      display: flex; gap: 12px; z-index: 10;
+    }
+    .tab {
+      padding: 10px 22px;
+      border-radius: 10px 10px 0 0;
+      background: #9b59b6; color: #fff;
+      text-decoration: none; font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: background 0.2s, color 0.2s;
+      border-bottom: 2px solid transparent;
+    }
+    .tab.active, .tab:hover {
+      background: #fff; color: #7d3c98;
+      border-bottom: 2px solid #7d3c98; cursor: default;
+    }
+    label, select, textarea, button {
+      color: #fff;
+      background: none;
+      font-size: 1em;
+    }
+    select, textarea {
+      border-radius: 8px;
+      background: #7d3c98;
+      border: none;
+      margin-bottom: 14px;
+      padding: 6px 10px;
+      width: 90%;
+      resize: none;
+    }
+    button {
+      background: #ffd700;
+      color: #7d3c98;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 7px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: background 0.2s, color 0.2s;
+    }
+    button:hover{
+      background: #fff;
+      color: #9b59b6;
+    }
+    #output {
+      margin-top: 1em;
+      word-break: break-all;
+      color: #ffd700;
+      font-weight: 600;
+      font-size: 1.05em;
+      min-height: 2em;
+    }
+    @media (max-width: 500px) {
+      .top-tabs { top: 10px; right: 10px; gap: 5px; }
+      .tab { padding: 6px 9px; font-size: 0.9em; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Right Tab Navigation -->
+  <div class="top-tabs">
+    <a href="index.html" class="tab">Home</a>
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="tab" target="_blank">Admin Panel</a>
+    <a href="translation.html" class="tab active">Translation</a>
+  </div>
+  <div class="container">
+    <h1>Translator</h1>
+    <label for="translation-type">Choose translation type:</label><br>
+    <select id="translation-type">
+      <option value="morse">Morse Code to English</option>
+      <option value="binary">Binary to English</option>
+    </select>
+    <br>
+    <textarea id="input" rows="4" placeholder="Enter Morse code (use spaces between letters, / between words) or Binary (8 bits per character, space separated)"></textarea><br>
+    <button onclick="translate()">Translate</button>
+    <div id="output"></div>
+  </div>
+  <script>
+    // Morse code dictionary
+    const MORSE_CODE = {
+      ".-":"A", "-...":"B", "-.-.":"C", "-..":"D", ".":"E", "..-.":"F", "--.":"G",
+      "....":"H", "..":"I", ".---":"J", "-.-":"K", ".-..":"L", "--":"M", "-.":"N",
+      "---":"O", ".--.":"P", "--.-":"Q", ".-.":"R", "...":"S", "-":"T", "..-":"U",
+      "...-":"V", ".--":"W", "-..-":"X", "-.--":"Y", "--..":"Z",
+      "-----":"0", ".----":"1", "..---":"2", "...--":"3", "....-":"4",
+      ".....":"5", "-....":"6", "--...":"7", "---..":"8", "----.":"9",
+      ".-.-.-":".", "--..--":",", "..--..":"?", ".----.":"'", "-.-.--":"!",
+      "-..-.":"/", "-.--.":"(`, "-.--.-":")", ".-...":"&", "---...":":",
+      "-.-.-.":";", "-...-":"=", ".-.-.":"+", "-....-":"-", "..--.-":"_",
+      ".-..-.":"\"", ".--.-.":"@", "/":" "
+    };
+
+    function morseToEnglish(input) {
+      // Separate words by / or 2 spaces, letters by single space
+      return input.trim().split(' / ').map(
+        word => word.split(' ').map(
+          letter => MORSE_CODE[letter] || '?'
+        ).join('')
+      ).join(' ');
+    }
+
+    function binaryToEnglish(input) {
+      return input.trim().split(/\s+/).map(
+        bin => /^[01]{8}$/.test(bin) ? String.fromCharCode(parseInt(bin, 2)) : '?'
+      ).join('');
+    }
+
+    function translate() {
+      const type = document.getElementById('translation-type').value;
+      const input = document.getElementById('input').value.trim();
+
+      if (!input) {
+        document.getElementById('output').textContent = '';
+        return;
+      }
+      let result = '';
+      if (type === 'morse') {
+        result = morseToEnglish(input.replace(/\s{2,}/g, ' / '));
+      } else if (type === 'binary') {
+        result = binaryToEnglish(input);
+      }
+      document.getElementById('output').textContent = result;
+    }
+  </script>
+</body>
+</html>
