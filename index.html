@@ -94,9 +94,56 @@
       font-size: 0.9em;
       opacity: 0.8;
     }
+
+    /* Top Right Tab Navigation */
+    .top-tabs {
+      position: absolute;
+      top: 30px;
+      right: 40px;
+      display: flex;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .tab {
+      padding: 10px 22px;
+      border-radius: 10px 10px 0 0;
+      background: #9b59b6;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: background 0.2s, color 0.2s;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab.active, .tab:hover {
+      background: #fff;
+      color: #7d3c98;
+      border-bottom: 2px solid #7d3c98;
+      cursor: default;
+    }
+
+    @media (max-width: 500px) {
+      .top-tabs {
+        top: 10px;
+        right: 10px;
+        gap: 5px;
+      }
+      .tab {
+        padding: 6px 9px;
+        font-size: 0.9em;
+      }
+    }
+
   </style>
 </head>
 <body>
+  <!-- Top Right Tab Navigation -->
+  <div class="top-tabs">
+    <a href="#" class="tab active">Home</a>
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="tab" target="_blank">Admin Panel</a>
+  </div>
   <div class="container">
     <!-- Profile Picture -->
     <img src="https://ibb.co/xqrqLqgP" alt="Profile Picture" class="profile-pic">
